@@ -16,7 +16,40 @@
 package org.uncommons.watchmaker.impl.de.factory;
 
 /**
+ * implementations provide a simple method to hold minimum and maximum allowed values.
  * @author Peter Day
  */
-public interface Limit {
+public interface Limit<T> {
+
+    /**
+     * @return The minimum permitted value
+     */
+    public T getMinimumValue();
+
+    /**
+     *
+     * @return The maximum allowed value
+     */
+    public T getMaximumValue();
+
+    /**
+     * Returns true if the value is >= minimumValue and <= maximumValue specified by
+     * the limit.
+     * @param value the value to test
+     * @return
+     */
+    public boolean isValid(T value);
+
+    /**
+     * <p>Restricts the value to the limit specified by this object.</p>
+     * <p>More specifically - concrete implementations should return:</p>
+     * <code>
+     *  value > getMaximumValue: maximumvalue
+     *  value < minimumValue: minimumValue
+     *  else: value
+     * </code>     
+     * @param value
+     * @return
+     */
+    public T limit(T value);
 }

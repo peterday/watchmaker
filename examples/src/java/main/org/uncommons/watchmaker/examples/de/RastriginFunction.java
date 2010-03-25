@@ -17,13 +17,21 @@ package org.uncommons.watchmaker.examples.de;
 
 import org.uncommons.watchmaker.impl.de.evaluator.DEFunction;
 
-
+/**
+ * An N dimensional Rastrigin function
+ *
+ */
 public class RastriginFunction implements DEFunction {
 
 	
-	private int noArgs;
+	private final int noArgs;
 	private double a;
-	
+
+    /**
+     *
+     * @param noArgs the number of dimensions for which the function should be created
+     * @param a parameter to infer the "bumpiness" of the function - higher values yield more complex surfaces
+     */
 	public RastriginFunction(int noArgs, double a) {
 		this.noArgs = noArgs;
 		this.a = a;
@@ -38,9 +46,6 @@ public class RastriginFunction implements DEFunction {
 			double x = args[i];
 			result = result + ((x*x) - (a * Math.cos(Math.PI * 2 * x)));
 		}
-//		double x = args[0];
-//		double y = args[1];
-//		double result = x * x + y * y - Math.cos(18 * x) - Math.cos(18 * y) + 2;
 		return result;
 	}
 

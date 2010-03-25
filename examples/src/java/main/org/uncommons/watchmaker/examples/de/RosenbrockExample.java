@@ -22,8 +22,8 @@ import org.uncommons.watchmaker.framework.termination.TargetFitness;
 import org.uncommons.watchmaker.impl.de.DEGenerationalEvolution;
 import org.uncommons.watchmaker.impl.de.evaluator.DEFitnessEvaluator;
 import org.uncommons.watchmaker.impl.de.evaluator.DEFunction;
+import org.uncommons.watchmaker.impl.de.factory.ComparableLimit;
 import org.uncommons.watchmaker.impl.de.factory.DoubleArrayCandidateFactory;
-import org.uncommons.watchmaker.impl.de.factory.Limit;
 import org.uncommons.watchmaker.impl.de.operators.DEMutation;
 import org.uncommons.watchmaker.impl.de.selection.DistinctSelection;
 
@@ -41,15 +41,14 @@ public class RosenbrockExample {
 		Random rng = new Random();
 		boolean maximize = false;
 		
-//		DEFunction function = new RosenbrockFunction();
-		DEFunction function = new RastriginFunction(2, 100d);
+		DEFunction function = new RosenbrockFunction();
+
 		DEFitnessEvaluator fitnessEvaluator = new DEFitnessEvaluator(function, maximize);
 		
 		int noParams = function.getNoArgs();
 		
-//		Limit<Double> limit = new Limit<Double>(-2.048, 2.048);
-		Limit<Double> limit = new Limit<Double>(-5.12, 5.12);
-		Limit<Double>[] limits = new Limit[noParams];
+		ComparableLimit<Double> limit = new ComparableLimit<Double>(-2.048, 2.048);
+		ComparableLimit<Double>[] limits = new ComparableLimit[noParams];
 		for (int i = 0; i<noParams; i++) {
 			limits[i] = limit;
 		}

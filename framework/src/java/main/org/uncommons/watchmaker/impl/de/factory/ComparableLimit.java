@@ -20,7 +20,7 @@ package org.uncommons.watchmaker.impl.de.factory;
  * 
  * @param <T>
  */
-public class ComparableLimit<T extends Comparable<T>> {
+public class ComparableLimit<T extends Comparable<T>> implements Limit<T>{
 	private T minimumValue;
 	private T maximumValue;
 	
@@ -44,7 +44,7 @@ public class ComparableLimit<T extends Comparable<T>> {
 		this.maximumValue = maximumValue;
 	}
 	
-	public T apply(T value) {
+	public T limit(T value) {
 		 if (value.compareTo(minimumValue) < 0) {
 			 return minimumValue;
 		 }

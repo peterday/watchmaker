@@ -15,34 +15,40 @@
 //=============================================================================
 package org.uncommons.watchmaker.impl.de;
 
+import org.uncommons.watchmaker.framework.*;
+import org.uncommons.watchmaker.impl.de.operators.DEMutation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.uncommons.watchmaker.framework.AbstractEvolutionEngine;
-import org.uncommons.watchmaker.framework.CandidateFactory;
-import org.uncommons.watchmaker.framework.EvaluatedCandidate;
-import org.uncommons.watchmaker.framework.FitnessEvaluator;
-import org.uncommons.watchmaker.framework.SelectionStrategy;
-
-
+/**
+ * EvolutionEngine for differential evolution.
+ * 
+ */
 public class DEGenerationalEvolution extends AbstractEvolutionEngine<Double[]> {
-	public DEGenerationalEvolution(
-			CandidateFactory<Double[]> candidateFactory,
-			FitnessEvaluator<? super Double[]> fitnessEvaluator, DEMutation mutator, SelectionStrategy<Double[]> selection, Random rng) {
+	DEMutation mutation;
+	SelectionStrategy<Double[]> selector;
+	private FitnessEvaluator<? super Double[]> fitnessEvaluator;
+
+    public DEGenerationalEvolution(
+			CandidateFactory<Double[]> candidateFactory, FitnessEvaluator<? super Double[]> fitnessEvaluator,
+            DEMutation mutator, SelectionStrategy<Double[]> selector, Random rng) {
 		super(candidateFactory, fitnessEvaluator, rng);
 		this.mutation = mutator;
-		this.selector = selection;
+		this.selector = selector;
 		this.fitnessEvaluator = fitnessEvaluator;
 		
 	}
 
 
-	DEMutation mutation;
-	SelectionStrategy<Double[]> selector;
-	private FitnessEvaluator<? super Double[]> fitnessEvaluator;
-	
-	
+    /**
+     *
+     * @param evaluatedPopulation The population at the beginning of the process.
+     * @param eliteCount Ignored in this case - elitism is automatically provided by the evolution method.
+     * @param rng A source of randomness.
+     * @return the next generation of individuals
+     */
 	@Override
 	protected List<EvaluatedCandidate<Double[]>> nextEvolutionStep(
 			List<EvaluatedCandidate<Double[]>> evaluatedPopulation, int eliteCount,
@@ -53,12 +59,18 @@ public class DEGenerationalEvolution extends AbstractEvolutionEngine<Double[]> {
 		//iterate through old population
 		for (int i = 0; i < evaluatedPopulation.size(); i++) {
 			EvaluatedCandidate<Double[]> baseCandidate = evaluatedPopulation.get(i);
-			//remove this from the new pop
+			//remove this from the new pop so it cannot be selected as a partner for mutation
 			newPop.remove(baseCandidate);
+
+            //select three other candidates for mutation / crossover
 			List<Double[]> otherInds = selector.select(newPop, fitnessEvaluator.isNatural(), 3, rng);
+
+//           apply the mutation
 			Double[] newInd = mutation.apply(baseCandidate.getCandidate(), otherInds, rng);
+            //evaluate this candidate
 			EvaluatedCandidate<Double[]> newEvaluated = new EvaluatedCandidate<Double[]>(newInd, fitnessEvaluator.getFitness(newInd, null));
-			if (fitnessEvaluator.isNatural()) {
+//          replace the base candidate in the population if the fitness is improved
+            if (fitnessEvaluator.isNatural()) {
 				if (newEvaluated.getFitness() > baseCandidate.getFitness()) {
 					newPop.add(newEvaluated);
 				}
@@ -67,7 +79,7 @@ public class DEGenerationalEvolution extends AbstractEvolutionEngine<Double[]> {
 				}
 			}
 			else {
-				//fitness not natural
+				//fitness not natural - lower is better
 				if (newEvaluated.getFitness() < baseCandidate.getFitness()) {
 					newPop.add(newEvaluated);
 				}
@@ -77,8 +89,7 @@ public class DEGenerationalEvolution extends AbstractEvolutionEngine<Double[]> {
 			}
 			
 		}
-		
-		//ignore elite count 
+
 
 		return newPop;
 	}

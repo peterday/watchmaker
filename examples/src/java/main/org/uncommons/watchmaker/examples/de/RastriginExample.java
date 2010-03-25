@@ -22,8 +22,8 @@ import org.uncommons.watchmaker.framework.termination.TargetFitness;
 import org.uncommons.watchmaker.impl.de.DEGenerationalEvolution;
 import org.uncommons.watchmaker.impl.de.evaluator.DEFitnessEvaluator;
 import org.uncommons.watchmaker.impl.de.evaluator.DEFunction;
+import org.uncommons.watchmaker.impl.de.factory.ComparableLimit;
 import org.uncommons.watchmaker.impl.de.factory.DoubleArrayCandidateFactory;
-import org.uncommons.watchmaker.impl.de.factory.Limit;
 import org.uncommons.watchmaker.impl.de.operators.DEMutation;
 import org.uncommons.watchmaker.impl.de.selection.DistinctSelection;
 
@@ -39,21 +39,28 @@ public class RastriginExample {
 	@SuppressWarnings("unchecked")
 	public static void main(String[] args) {
 		Random rng = new Random();
-		boolean maximize = false;
 
-//		DEFunction function = new RosenbrockFunction();
-		DEFunction function = new RastriginFunction(2, 100d);
+        boolean maximize = false;
+
+        //create a 4 dimensional rastrigin function with a high degree of bumpiness
+        // global minimum is at 0,0,0,0
+		DEFunction function = new RastriginFunction(4, 100d);
+
 		DEFitnessEvaluator fitnessEvaluator = new DEFitnessEvaluator(function, maximize);
 
 		int noParams = function.getNoArgs();
 
-//		Limit<Double> limit = new Limit<Double>(-2.048, 2.048);
-		Limit<Double> limit = new Limit<Double>(-5.12, 5.12);
-		Limit<Double>[] limits = new Limit[noParams];
+        //set the limits for each dimension
+		ComparableLimit<Double> limit = new ComparableLimit<Double>(-5.12, 5.12);
+		ComparableLimit<Double>[] limits = new ComparableLimit[noParams];
 		for (int i = 0; i<noParams; i++) {
 			limits[i] = limit;
 		}
+
+        //create factory for initialising candidate solutions
 		DoubleArrayCandidateFactory factory = new DoubleArrayCandidateFactory(limits);
+
+        //create the mutator with "standard"
 		DEMutation mutator = new DEMutation(limits, 0.9, 0.5);
 		SelectionStrategy<Double[]> selection = new DistinctSelection<Double[]>();
 

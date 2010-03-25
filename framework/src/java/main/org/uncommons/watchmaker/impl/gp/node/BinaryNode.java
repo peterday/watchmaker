@@ -1,6 +1,22 @@
+//=============================================================================
+// Copyright 2006-2010 Daniel W. Dyer
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//=============================================================================
 package org.uncommons.watchmaker.impl.gp.node;
 
-import day.peter.watchmaker.gp.inputParameter.ParameterValues;
+import org.uncommons.watchmaker.impl.gp.inputParameter.ParameterValues;
+
 
 /**
  * A binary node operates on exactly two arguments and results 
@@ -17,7 +33,6 @@ public abstract class BinaryNode<T, U, V> extends BaseNode<T> {
 	public static final int ARITY = 2;
 	
 	@SuppressWarnings("unchecked")
-	@Override
 	public T evaluate(ParameterValues values) {
 		U arg1 = (U) this.getChild(0).evaluate(values);
 		V arg2 = (V) this.getChild(1).evaluate(values);
@@ -36,7 +51,6 @@ public abstract class BinaryNode<T, U, V> extends BaseNode<T> {
 		return sb.toString();
 	}
 	
-	@Override
 	public int getArity() {
 		
 		return ARITY;
